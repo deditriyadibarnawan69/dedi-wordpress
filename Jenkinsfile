@@ -20,15 +20,5 @@ pipeline {
                 }
             }
         }
-    stage('rollout restart  Kubernetes') {
-        steps {
-            script {
-                // Deploy to Kubernetes using kubectl
-                sh '''
-                    kubectl rollout restart deployment/dedi-java-app-deploy -n $KUBERNETES_NAMESPACE
-                '''
-            }
-        }
-    }
   } 
 }
