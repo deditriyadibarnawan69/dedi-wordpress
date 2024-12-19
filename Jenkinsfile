@@ -6,7 +6,7 @@ pipeline {
   stages {
     stage('Checkout Source') {
       steps {
-	      checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'token-key-github', url: 'https://github.com/deditriyadibarnawan69/dedi-java-app.git']])
+	      checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'token-key-github', url: 'https://github.com/deditriyadibarnawan69/dedi-wordpress.git']])
       }
     }
     stage('Deploy to Kubernetes') {
