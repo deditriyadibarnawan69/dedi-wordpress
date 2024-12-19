@@ -1,8 +1,6 @@
 pipeline {
   environment {
-    DOCKER_IMAGE = 'brdcookies6969/dedi-java-app'
-    dockerImage = ""
-    KUBERNETES_NAMESPACE = 'dedi-namespace'
+    KUBERNETES_NAMESPACE = 'dedi-waordpress'
   }
   agent any
   stages {
@@ -11,51 +9,26 @@ pipeline {
 	      checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'token-key-github', url: 'https://github.com/deditriyadibarnawan69/dedi-java-app.git']])
       }
     }
-    stage('Build Docker Image') {
+    stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Deploy to Kubernetes using kubectl
+                    sh '''
+                        kubectl create namespace $KUBERNETES_NAMESPACE
+                        kubectl apply -f manifest-wordpress.yaml -n $KUBERNETES_NAMESPACE
+                    '''
+                }
+            }
+        }
+    stage('rollout restart  Kubernetes') {
         steps {
             script {
-                // Build Docker image
+                // Deploy to Kubernetes using kubectl
                 sh '''
-                    docker build -t $DOCKER_IMAGE .
+                    kubectl rollout restart deployment/dedi-java-app-deploy -n $KUBERNETES_NAMESPACE
                 '''
             }
         }
     }
-    stage('Docker Push') {
-        steps {
-            withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-            sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-            sh 'docker push $DOCKER_IMAGE'
-            }
-        }
-    }
-    
-    stage('Deploy again to Kubernetes') {
-            steps {
-                script {
-                    // Deploy to Kubernetes using kubectl
-                    sh '''
-                        kubectl delete -f manifest-java-app.yaml -n $KUBERNETES_NAMESPACE
-                        kubectl apply -f manifest-java-app.yaml -n $KUBERNETES_NAMESPACE
-                    '''
-                }
-            }
-        }
-        stage('rollout restart  Kubernetes') {
-            steps {
-                script {
-                    // Deploy to Kubernetes using kubectl
-                    sh '''
-                        kubectl rollout restart deployment/dedi-java-app-deploy -n $KUBERNETES_NAMESPACE
-                    '''
-                }
-            }
-        }
   } 
-  post {
-        always {
-            // Clean up if necessary, for example, remove the Docker image locally
-            sh 'docker rmi $DOCKER_IMAGE'
-        }
-    }
 }
