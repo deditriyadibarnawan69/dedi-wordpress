@@ -49,6 +49,13 @@ spec:
               value: "wordpresspassword"
           ports:
             - containerPort: 3306
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
@@ -85,6 +92,13 @@ spec:
               value: "wordpresspassword"
           ports:
             - containerPort: 80
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           volumeMounts:
             - name: wordpress-persistent-storage
               mountPath: /var/www/html
