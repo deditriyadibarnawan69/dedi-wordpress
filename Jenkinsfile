@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    KUBERNETES_NAMESPACE = 'dedi-waordpress'
+    KUBERNETES_NAMESPACE = 'dedi-wordpress'
   }
   agent any
   stages {
